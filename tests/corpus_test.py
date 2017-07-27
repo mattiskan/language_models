@@ -3,7 +3,7 @@ import pytest
 from src.corpus import Corpus
 from src.ngram_model import START_TOKEN
 from src.ngram_model import END_TOKEN
-
+   
 
 def test_count():
     corpus = Corpus(2)

@@ -1,8 +1,6 @@
 from src.evaluate_model import _split_data
 
 
-
-
 def test_split_data_even_length():
     test_data = range(30)
 

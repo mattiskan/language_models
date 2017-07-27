@@ -19,6 +19,15 @@ def example_corpus():
     return corpus
 
 
+def test_example_counts(example_corpus):
+    assert example_corpus.unique_word_count() == 11
+
+    assert example_corpus.count(('John', )) == 1
+    assert example_corpus.count(('<BOS>', 'John')) == 1
+
+    assert example_corpus.prefix_count(('<BOS>', 'WHATEVER')) == 3
+
+
 def test_integration_no_smoothing(example_corpus):
     
     model = ngram_model(2, no_smoothing)
@@ -37,7 +46,7 @@ def test_blah(example_corpus):
 
     
 def test_integration_additive_smoothing(example_corpus):
-
+    
     model = ngram_model(2, additive_smoothing)
 
     estimate = sentence_prob('John read a book', model, example_corpus)
