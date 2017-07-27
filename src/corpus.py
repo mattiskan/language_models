@@ -23,7 +23,7 @@ class Corpus(object):
         return self._counts[len(ngram) - 1][ngram]
 
     def total(self, n):
-        return len(self._counts[n-1].values())
+        return len(self._counts[n-1].values()) - 2 # don't include <BOS> & <EOS>
 
     def hist_count(self, ngram, add=1):
         history = ngram[:-1]

@@ -4,7 +4,7 @@ from src.ngram_model import ngram_model
 from src.ngram_model import START_TOKEN
 from src.ngram_model import sentence_prob
 from src.math_utils import approx
-from src.smoothing import add_one_smoothing
+from src.smoothing import additive_smoothing
 from src.smoothing import no_smoothing
 
 
@@ -35,11 +35,11 @@ def test_blah(example_corpus):
     assert approx(estimate, 1/3.0)
 
     
-def test_integration_add_one_smoothing(example_corpus):
+def test_integration_additive_smoothing(example_corpus):
 
-    model = ngram_model(2, add_one_smoothing)
+    model = ngram_model(2, additive_smoothing)
 
     estimate = sentence_prob('John read a book', model, example_corpus)
     
-    assert  0.059 < estimate < 0.061
+    assert approx(estimate, 0.0001, delta=0.00003)
     assert sentence_prob('Cher read a book', model, example_corpus) > 0
