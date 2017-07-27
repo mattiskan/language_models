@@ -2,18 +2,12 @@
 See http://joneschen.org/spigdog/papers/h015a-techreport.pdf for guidance.
 """
 import os
+from decimal import Decimal
 
 DEBUG = os.environ.get('DEBUG', False)
 
 def no_smoothing(ngram, corpus):
-    if DEBUG:
-        print(ngram, corpus.count(ngram))
-        print(ngram[:-1] + ('*',), corpus.count(ngram[:-1]))
-        print('|V|', corpus.total(1))
-        print('p:',  corpus.count(ngram) / float(corpus.count(ngram[:-1])))
-        print()
-    
-    return corpus.count(ngram) / float(corpus.count(ngram[:-1]))
+    return additive_smoothing(ngram, corpus, delta=0)
 
 def additive_smoothing(ngram, corpus, delta=1):
     numerator = delta + corpus.count(ngram)
@@ -29,4 +23,4 @@ def additive_smoothing(ngram, corpus, delta=1):
         print('p:',  numerator / float(denominator))
         print()
 
-    return numerator / float(denominator)
+    return Decimal(numerator) / Decimal(denominator)

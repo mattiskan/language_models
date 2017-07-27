@@ -1,4 +1,5 @@
 import pytest
+from decimal import Decimal
 from src.corpus import Corpus
 from src.ngram_model import ngram_model
 from src.ngram_model import START_TOKEN
@@ -32,7 +33,7 @@ def test_blah(example_corpus):
     model = ngram_model(2, no_smoothing)
 
     estimate = model([START_TOKEN, 'John'], example_corpus)
-    assert approx(estimate, 1/3.0)
+    assert estimate == Decimal(1) / Decimal(3)
 
     
 def test_integration_additive_smoothing(example_corpus):

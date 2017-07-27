@@ -5,3 +5,5 @@ venv/*
 
 # pytest
 .cache/
+
+.nltk_data

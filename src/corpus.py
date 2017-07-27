@@ -10,6 +10,15 @@ class Corpus(object):
         self.n = n
         self._counts = [defaultdict(int) for _ in range(n)]
         self._hist = [defaultdict(int) for _ in range(n)]
+
+    @classmethod
+    def from_dataset(cls, n, dataset):
+        instance = cls(n)
+        
+        for sentence in dataset:
+            instance.add_sentence(sentence)
+
+        return instance
     
     def add_sentence(self, sentence):
         tokenized_sentence = tokenize(sentence)
