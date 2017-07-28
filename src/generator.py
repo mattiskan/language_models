@@ -1,3 +1,4 @@
+import os
 from collections import defaultdict
 
 from src.corpus import Corpus
@@ -8,6 +9,8 @@ from src.ngram_model import sentence_prob
 from src.smoothing import kneser_ney
 from src.math_utils import weighted_choice
 from src.datasets import the_donald
+
+DEBUG = os.environ.get('DEBUG', False)
 
 OVERLAP = 2
 LENGTH_BOOST = 0.06
@@ -36,12 +39,12 @@ def generate_brown():
         try:
             new_sentence = _generate_sentence(start_ngrams, bridge)
             new_sentence_prob = sentence_prob(' '.join(new_sentence), ngram_model(3, kneser_ney), corpus) * len(new_sentence)**LENGTH_BOOST
-            print('sentence_prob', new_sentence_prob)
+            if DEBUG: print('sentence_prob', new_sentence_prob)
             
             while MIN_PROB > new_sentence_prob:
                 new_sentence = _generate_sentence(start_ngrams, bridge) 
                 new_sentence_prob = sentence_prob(' '.join(new_sentence), ngram_model(3, kneser_ney), corpus) * len(new_sentence)**LENGTH_BOOST
-                print('retry: sentence_prob', new_sentence_prob)                
+                if DEBUG: print('retry: sentence_prob', new_sentence_prob)                
 
         
             print(' '.join(new_sentence))
