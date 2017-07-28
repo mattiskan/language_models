@@ -1,19 +1,16 @@
+from nltk.corpus import brown
 from src.ngram_model import sentence_prob, ngram_model, tokenize
-from src.smoothing import additive_smoothing
+from src.smoothing import kneser_ney
 from src.corpus import Corpus
        
 
 def main():
-    corpus = Corpus(3)
-
-    with open('lines.txt', 'r') as rfile:
-        for line in rfile:
-            if line:
-                corpus.add_sentence(line.strip())
+    brown_dataset = (' '.join(sent) for sent in brown.sents())
+    corpus = Corpus.from_dataset(4, brown_dataset)
 
     while True:
-        sentence = input('\n\n> ')
-        print(sentence_prob(sentence, ngram_model(2, additive_smoothing), corpus))
+        sentence = input('\n> ')
+        print(sentence_prob(sentence, ngram_model(3, kneser_ney), corpus))
 
 if __name__ == '__main__':
     main()
