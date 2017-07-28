@@ -1,4 +1,5 @@
 import json
+import html
 from os import listdir
 from src.corpus import Corpus
 from nltk.corpus import brown
@@ -26,11 +27,13 @@ def donald_speech(n=3):
             with open('crawler_responses/time.com/' + fname, 'r') as rfile:
                 yield from json.load(rfile)
 
-
     def tokenize_and_filter(sent):
-        return [word for word in word_tokenize(sent) if word not in {'.', ';', ':'}]
+        return [word for word in word_tokenize(html.unescape(sent)) if word not in {';', ':', '``', '&', '#', "''"}]
 
     return Corpus.from_dataset(n, (tokenize_and_filter(sent) for sent in results()))
+
+def _yelp_reviews():
+    pass
 
 
 def parse_file(filename):

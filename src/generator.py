@@ -34,7 +34,6 @@ def generate_brown():
         if ngram[0] == START_TOKEN:
             start_ngrams.append((ngram, w))
        
-    #import ipdb; ipdb.set_trace()
         
     print('started generation')
     while True:
@@ -49,7 +48,7 @@ def generate_brown():
                 if DEBUG: print('retry: sentence_prob', new_sentence_prob)                
 
         
-            print(' '.join(new_sentence))
+            print(_sanitize(new_sentence))
             input()
         except AssertionError:
             continue
@@ -74,6 +73,25 @@ def _generate_sentence(start_ngrams, bridge):
     sentence.extend(current_ngram[1:])
 
     return sentence[1:-1]
+
+def _sanitize(sentence):
+    sentence_str = ' '.join(sentence)
+
+    for appo in ("'", '’'):
+        sentence_str = sentence_str.replace(f" n{appo}t", f"n{appo}t")
+        sentence_str = sentence_str.replace(f" {appo}ve", f"{appo}ve")
+        sentence_str = sentence_str.replace(f" {appo}s", f"{appo}s")
+        sentence_str = sentence_str.replace(f" {appo}re", f"{appo}re")
+        sentence_str = sentence_str.replace(f" {appo}m", f"{appo}m")
+        sentence_str = sentence_str.replace(f" {appo}ll", f"{appo}ll")
+        sentence_str = sentence_str.replace(f" {appo}ll", f"{appo}ll")
+
+        sentence_str = sentence_str.replace(f" {appo} ", f"{appo}")
+
+    sentence_str = sentence_str.replace(" ,", ",")
+    sentence_str = sentence_str.replace(" .", ".")
+    sentence_str = sentence_str.replace(" ?", "?")
+    return sentence_str
     
 
 

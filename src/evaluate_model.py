@@ -25,7 +25,7 @@ def cross_entropy(model, corpus, testing_data):
 
         # log(a * b) <==> log(a) + log(b)
         log_prob_product += math.log(prob + 0.1 ** 100, 2)
-        word_count += len(sentence.split()) - 1
+        word_count += len(sentence) - 1
 
     return -log_prob_product / word_count
 
@@ -45,13 +45,12 @@ def _split_data(data, frac=0.7):
 
 def brown_self_perplexity_eval():
     from nltk.corpus import brown
-    brown_dataset = [' '.join(sent) for sent in brown.sents()]
+    brown_dataset = [sent for sent in brown.sents()]
 
     results = defaultdict(list)
     for _ in range(1):
         training_data, testing_data = _split_data(brown_dataset)
         corpus = Corpus.from_dataset(3, training_data)
-        testing_data = (sent.split() for sent in testing_data)
         
         for smoothing_method in [kneser_ney]:
             results[smoothing_method.__name__].append(

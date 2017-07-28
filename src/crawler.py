@@ -9,10 +9,13 @@ from gevent.pool import Pool
 
 from pyquery import PyQuery
 
+
+DEBUG = os.environ.get('DEBUG', False)
+
+
 CONNECTION_LIMIT = 10
 adapter = requests.adapters.HTTPAdapter(pool_connections=CONNECTION_LIMIT, 
                                         pool_maxsize=CONNECTION_LIMIT)
-
 
 
 with open('keys.json', 'r') as rfile:
@@ -98,24 +101,42 @@ def fetch_transcript(url, session):
 def parse_transcript_basic(rfile):
     pq = PyQuery(rfile.read())
     
-    for query in ('blockquote', 'article'):
-        if pq(query):
-            text = pq(query).text()
+    if pq('blockquote'):
+        text = pq('blockquote').text()
+        
+        sents = sent_tokenize(text)
+        result = Parser.parse_list(sents)
+        return result
 
-            for token in ('(APPLAUSE)', '(Applause.)', '(LAUGHTER)', '(BOOING)', '(CROSSTALK)', '(UNKNOWN)'):
-                text = text.replace(token, ' ')
+    # let's start searching for other crap ..
+    for script_tag in pq('script'):
+        try:
+            payload = json.loads(script_tag.text)
+            
+            if payload.get('articleBody'):
+                results = Parser.parse_list(sent_tokenize(payload['articleBody']))
 
-            sents = sent_tokenize(text)
-            try:
-                return Parser.parse_list(sents) or sents
-            except:
-                return sents
+                if results:
+                    return results
+
+                # some keywords may hint that the enitre thing is a speech
+                keywords = {kw.lower() for kw in payload.get('keywords', [])}
+                if all(req in keywords for req in ['donald-trump']):
+                    return sent_tokenize(payload['articleBody'])
+
+                if DEBUG: import ipdb; ipdb.set_trace()
+                pass
+
+        except json.decoder.JSONDecodeError:
+            pass
+
 
 class Parser(object):
 
     last_was_trump = False
-    new_speaker = re.compile("^\s*[A-Z \(\)]+:.*")
-    trump_speaks = re.compile("^\s*TRUMP:.*")
+    new_speaker = re.compile("^.*[A-Z \(\)]+\s?:.*")
+    random_crap_pattern = "\([A-Z ]+\)"
+    trump_speaks = re.compile("^\s*T[RUMPrump]+:.*")
     
     @classmethod
     def parse_list(cls, text_list):
@@ -123,8 +144,13 @@ class Parser(object):
         results = []
         for line in text_list:
 
-            for token in ('(APPLAUSE)', '(Applause.)', '(LAUGHTER)', '(BOOING)', '(CROSSTALK)', '(UNKNOWN)'):
-                line = line.replace(token, ' ')
+            before = line[:]
+            line = re.sub(cls.random_crap_pattern, '', line)
+            
+            if before != line and DEBUG:
+                print('before', before)
+                print('after', line)
+                print()
             
             if cls.last_was_trump:
                 if cls.new_speaker.match(line):
@@ -137,7 +163,6 @@ class Parser(object):
                     cls.last_was_trump = True
                     results.append(line[len('TRUMP:'):])
                     continue
-
                 
         return results
 
@@ -145,18 +170,22 @@ class Parser(object):
 if __name__ == '__main__':
     #crawl_times()
 
-    for fname in listdir('crawler_raw_responses/time.com/'):
+    total = 0
+    for fname in ([] or listdir('crawler_raw_responses/time.com/')):
         try:
             if int(fname):
                 with open('crawler_raw_responses/time.com/' + fname, 'r') as rfile:
                     results = parse_transcript_basic(rfile)
 
-                print('read total of', sum(len(sent.split()) for sent in results))
+                partial = sum(len(sent.split()) for sent in results)
+                print(rfile.name)
+                total += partial
 
                 with open('crawler_responses/time.com/' + fname, 'w') as wfile:
                     wfile.write(json.dumps(results))
         except TypeError:
             pass
+    print('read total of', total)
                     
 
 
