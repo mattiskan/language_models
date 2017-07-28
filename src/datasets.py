@@ -28,12 +28,7 @@ def donald_speech(n=3):
 
 
     def tokenize_and_filter(sent):
-        tokenized_sent = word_tokenize(sent)
-        
-        if tokenized_sent[-1] == '.':
-            return tokenized_sent[:-1]
-        else:
-            return tokenized_sent
+        return [word for word in word_tokenize(sent) if word not in {'.', ';', ':'}]
 
     return Corpus.from_dataset(n, (tokenize_and_filter(sent) for sent in results()))
 
