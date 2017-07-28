@@ -5,6 +5,9 @@ NLTK_DATA="$(HOME)/nltk_data"
 run: venv
 	venv/bin/python src/main.py
 
+generate: venv
+	venv/bin/python src/generator.py
+
 test: venv
 	venv/bin/python -m pytest -v tests/
 

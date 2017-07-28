@@ -26,7 +26,6 @@ class Corpus(object):
     def add_sentence(self, sentence):
         tokenized_sentence = tokenize(sentence)
 
-        #print(tokenized_sentence)
 
         for n in range(1, self.n + 1):
             for ngram in to_ngrams(tokenized_sentence, n):
@@ -45,8 +44,6 @@ class Corpus(object):
     def post_process(self):
         for value in self._counts.values():
             self._reverse[value] += 1
-
-        print(len(self._counts.keys()))
     
     def count(self, ngram):
         if len(ngram) > self.n: raise ValueError
@@ -82,3 +79,7 @@ class Corpus(object):
     
     def postfixes_occuring_at_least(self, ngram, searched_count):
         return sum(1 for count in self._prefix_words[ngram].values() if count >= searched_count)
+
+    def all_ngrams(self):
+        return self._counts
+        
