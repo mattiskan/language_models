@@ -13,7 +13,7 @@ from src.datasets import the_donald
 DEBUG = os.environ.get('DEBUG', False)
 
 OVERLAP = 2
-LENGTH_BOOST = 0.06
+LENGTH_BOOST = 0.6
 
 MIN_PROB = 10 ** -15
 
@@ -38,12 +38,12 @@ def generate_brown():
     while True:
         try:
             new_sentence = _generate_sentence(start_ngrams, bridge)
-            new_sentence_prob = sentence_prob(' '.join(new_sentence), ngram_model(3, kneser_ney), corpus) * len(new_sentence)**LENGTH_BOOST
+            new_sentence_prob = sentence_prob(new_sentence, ngram_model(3, kneser_ney), corpus) * len(new_sentence)**LENGTH_BOOST
             if DEBUG: print('sentence_prob', new_sentence_prob)
             
             while MIN_PROB > new_sentence_prob:
                 new_sentence = _generate_sentence(start_ngrams, bridge) 
-                new_sentence_prob = sentence_prob(' '.join(new_sentence), ngram_model(3, kneser_ney), corpus) * len(new_sentence)**LENGTH_BOOST
+                new_sentence_prob = sentence_prob(new_sentence, ngram_model(3, kneser_ney), corpus) * len(new_sentence)**LENGTH_BOOST
                 if DEBUG: print('retry: sentence_prob', new_sentence_prob)                
 
         

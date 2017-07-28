@@ -7,7 +7,7 @@ from src.ngram_model import END_TOKEN
 
 def test_count():
     corpus = Corpus(2)
-    corpus.add_sentence('a b c')
+    corpus.add_sentence('a b c'.split())
 
     assert corpus.count(('a', 'b')) == 1
     assert corpus.count((START_TOKEN, 'a')) == 1

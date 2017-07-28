@@ -51,6 +51,7 @@ def brown_self_perplexity_eval():
     for _ in range(1):
         training_data, testing_data = _split_data(brown_dataset)
         corpus = Corpus.from_dataset(3, training_data)
+        testing_data = (sent.split() for sent in testing_data)
         
         for smoothing_method in [kneser_ney]:
             results[smoothing_method.__name__].append(

@@ -7,7 +7,7 @@ from src.datasets import the_donald
 
 def main():
     while True:
-        sentence = input('\n> ')
+        sentence = input('\n> ').split()
         print(sentence_prob(sentence, ngram_model(3, kneser_ney), the_donald(n=3)))
 
 if __name__ == '__main__':

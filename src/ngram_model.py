@@ -29,4 +29,4 @@ def tokenize(sentence):
     if (START_TOKEN in sentence) or (END_TOKEN in sentence):
         raise ValueError(f'Sentence already tokenized: {sentence}')
 
-    return [START_TOKEN] + sentence.split() + [END_TOKEN]
+    return [START_TOKEN] + sentence + [END_TOKEN]

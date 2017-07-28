@@ -15,7 +15,7 @@ def brown_dataset(n=3):
 
 
 def the_donald(n=3):
-    return Corpus.from_dataset(n, (line['text'] for line in parse_file('the_donald_tweets.json')))
+    return Corpus.from_dataset(n, (line['text'].split() for line in parse_file('the_donald_tweets.json')))
 
 
 

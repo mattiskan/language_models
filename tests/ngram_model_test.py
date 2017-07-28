@@ -9,9 +9,9 @@ from src.ngram_model import END_TOKEN
 from src.math_utils import approx
 
 def test_tokenize():
-    assert tokenize('') == [START_TOKEN, END_TOKEN]
-    assert tokenize('foo') == [START_TOKEN, 'foo', END_TOKEN]
-    assert tokenize('my name is luca') == [START_TOKEN, 'my', 'name', 'is', 'luca', END_TOKEN]
+    assert tokenize([]) == [START_TOKEN, END_TOKEN]
+    assert tokenize(['foo']) == [START_TOKEN, 'foo', END_TOKEN]
+    assert tokenize('my name is luca'.split()) == [START_TOKEN, 'my', 'name', 'is', 'luca', END_TOKEN]
 
     with pytest.raises(ValueError):
         tokenize(START_TOKEN + ' foo')
