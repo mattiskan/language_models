@@ -1,6 +1,7 @@
 import os
 from collections import defaultdict
 
+import src.datasets
 from src.corpus import Corpus
 from src.ngram_model import START_TOKEN
 from src.ngram_model import END_TOKEN
@@ -8,32 +9,33 @@ from src.ngram_model import ngram_model
 from src.ngram_model import sentence_prob
 from src.smoothing import kneser_ney
 from src.math_utils import weighted_choice
-from src.datasets import the_donald
+
 
 DEBUG = os.environ.get('DEBUG', False)
 
-OVERLAP = 2
-LENGTH_BOOST = 0.6
+OVERLAP = 3
+LENGTH_BOOST = 2
 
 MIN_PROB = 10 ** -15
 
 def generate_brown():
     print('loading corpus')
-    corpus = the_donald()
+    corpus = src.datasets.donald_speech(n=4)
 
     bridge = defaultdict(list)
     start_ngrams = []
     for ngram, w in corpus.all_ngrams().items():
-        if len(ngram) < 3:
+
+        if len(ngram) < OVERLAP + 1:
             continue
         
         bridge[ngram[:OVERLAP]].append((ngram, w))
 
         if ngram[0] == START_TOKEN:
             start_ngrams.append((ngram, w))
-        
+       
     #import ipdb; ipdb.set_trace()
-
+        
     print('started generation')
     while True:
         try:
@@ -57,10 +59,10 @@ def _generate_sentence(start_ngrams, bridge):
 
     #import ipdb; ipdb.set_trace()
     
-    sentence = list(current_ngram[:OVERLAP-1])  # let's get this party started
+    sentence = [current_ngram[0]]  # let's get this party started
     
     while current_ngram[-1] != END_TOKEN:
-        #print(current_ngram)
+        if DEBUG: print(current_ngram)
 
         #import ipdb; ipdb.set_trace()
 

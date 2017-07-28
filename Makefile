@@ -14,6 +14,9 @@ test: venv
 eval: venv .nltk_data
 	venv/bin/python src/evaluate_model.py
 
+crawl: venv
+	venv/bin/python src/crawler.py
+
 .nltk_data:
 	venv/bin/python -m nltk.downloader -d $(NLTK_DATA) all
 	ln -s $(NLTK_DATA) .nltk_data # create target to prevent re-download

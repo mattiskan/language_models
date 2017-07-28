@@ -7,3 +7,5 @@ venv/*
 .cache/
 
 .nltk_data
+
+keys.json

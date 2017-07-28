@@ -1,3 +1,6 @@
 nltk
 pytest
 mock
+gevent
+requests
+pyquery
