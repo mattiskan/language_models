@@ -26,7 +26,16 @@ def donald_speech(n=3):
             with open('crawler_responses/time.com/' + fname, 'r') as rfile:
                 yield from json.load(rfile)
 
-    return Corpus.from_dataset(n, (word_tokenize(res) for res in results()))
+
+    def tokenize_and_filter(sent):
+        tokenized_sent = word_tokenize(sent)
+        
+        if tokenized_sent[-1] == '.':
+            return tokenized_sent[:-1]
+        else:
+            return tokenized_sent
+
+    return Corpus.from_dataset(n, (tokenize_and_filter(sent) for sent in results()))
 
 
 def parse_file(filename):

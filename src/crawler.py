@@ -16,7 +16,7 @@ adapter = requests.adapters.HTTPAdapter(pool_connections=CONNECTION_LIMIT,
 
 
 with open('keys.json', 'r') as rfile:
-    keys = json.loads(rfile)
+    keys = json.load(rfile)
     GOOGLE_API_KEY = keys['GOOGLE_API_KEY']
     CX = keys['GOOGLE_CX']
 
@@ -97,7 +97,7 @@ def fetch_transcript(url, session):
 
 def parse_transcript_basic(rfile):
     pq = PyQuery(rfile.read())
-
+    
     for query in ('blockquote', 'article'):
         if pq(query):
             text = pq(query).text()
@@ -110,24 +110,6 @@ def parse_transcript_basic(rfile):
                 return Parser.parse_list(sents) or sents
             except:
                 return sents
-            
-def parse_transcript(rfile):
-    pq = PyQuery(rfile.read())
-    speech = pq('blockquote.text p')
-
-    results = []
-    for paragraph in speech:
-
-        if paragraph.text:
-
-            results.extend(Parser.parse_list([paragraph.text]))
-        elif paragraph.text_content():
-            text = paragraph.text_content()
-
-            results.extend(Parser.parse_list(sent_tokenize(text)))
-        
-    return results
-
 
 class Parser(object):
 
