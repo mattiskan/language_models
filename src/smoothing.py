@@ -25,15 +25,15 @@ def additive_smoothing(ngram, corpus, delta=1):
         print('p:',  numerator / float(denominator))
         print()
 
-    return Decimal(numerator) / Decimal(denominator)
+    return numerator / float(denominator)
 
 def good_turing(ngram, corpus):
     r = corpus.count(ngram)
     n_r = corpus.num_with_same_count_as(ngram) or 0.00001 # fallback chosen randomly ¯\_(ツ)_/¯
 
-    r_star = Decimal(r + 1) * (Decimal(n_r+1) / Decimal(n_r))
+    r_star = (r + 1) * (n_r+1) / float(n_r)
         
-    return r_star / Decimal(corpus.nr_count_distr())
+    return r_star / float(corpus.nr_count_distr())
 
 def kneser_ney(ngram, corpus):
 
@@ -43,7 +43,6 @@ def kneser_ney(ngram, corpus):
     
     Y = n1 / (n1 + 2*n2)
 
-    # these are all decimal.Decimal
     D = defaultdict(lambda: D[3], {
         0: 0.0,
         1: 1 - 2 * Y * (n2 / n1),
@@ -51,6 +50,7 @@ def kneser_ney(ngram, corpus):
         3: 3 - 4 * Y * (n4 / n3),
     })
 
+    #import ipdb; ipdb.set_trace()
     
     if len(ngram) == 1:
         if DEBUG:
@@ -58,14 +58,20 @@ def kneser_ney(ngram, corpus):
 
         return corpus.specific_prefix_count(ngram[0]) / float(corpus.unique_ngrams(n=2))
 
+
     term1 = (corpus.count(ngram) - D[corpus.count(ngram)]) / (corpus.prefix_count(ngram) or 1)
+
 
     term2 = kneser_ney(ngram[1:], corpus) * (
         D[1] * corpus.postfixes_occuring_exactly(ngram[:-1], 1)
         + D[2] * corpus.postfixes_occuring_exactly(ngram[:-1], 2)
         + D[3] * corpus.postfixes_occuring_at_least(ngram[:-1], 3)
-    ) / (corpus.prefix_count(ngram[:-1]) or 1)
-    
+    ) / (corpus.prefix_count(ngram) or 1.0)
+
+    if corpus.prefix_count(ngram) == 0:
+        assert not corpus.postfixes_occuring_exactly(ngram[:-1], 1)
+        assert not corpus.postfixes_occuring_exactly(ngram[:-1], 2)
+        assert not corpus.postfixes_occuring_at_least(ngram[:-1], 3)
 
     if DEBUG:
         print(ngram, term1 + term2)

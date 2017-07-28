@@ -1,7 +1,6 @@
 import random
 import math
 
-from decimal import Decimal
 from decimal import getcontext
 from collections import defaultdict
 
@@ -43,10 +42,8 @@ def _split_data(data, frac=0.7):
     return data[:cutoff], data[cutoff:]
 
 
-if __name__ == '__main__':
 
-    getcontext().prec = 100
-
+def brown_self_perplexity_eval():
     from nltk.corpus import brown
     brown_dataset = [' '.join(sent) for sent in brown.sents()]
 
@@ -62,3 +59,7 @@ if __name__ == '__main__':
 
     for smoothing_name, _results in results.items():
         print(smoothing_name, sum(_results) / len(_results))
+    
+if __name__ == '__main__':
+    brown_self_perplexity_eval()
+    

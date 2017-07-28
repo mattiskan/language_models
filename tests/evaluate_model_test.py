@@ -2,7 +2,7 @@ from src.evaluate_model import _split_data
 
 
 def test_split_data_even_length():
-    test_data = range(30)
+    test_data = list(range(30))
 
     x, y = _split_data(test_data, frac=0.5)
 
@@ -10,7 +10,7 @@ def test_split_data_even_length():
     assert not set(x).intersection(y)
 
 def test_split_data_odd_length():
-    test_data = range(31)
+    test_data = list(range(31))
 
     x, y = _split_data(test_data, frac=0.5)
 

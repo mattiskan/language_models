@@ -6,11 +6,11 @@ from src.corpus import Corpus
 
 def main():
     brown_dataset = (' '.join(sent) for sent in brown.sents())
-    corpus = Corpus.from_dataset(4, brown_dataset)
+    corpus = Corpus.from_dataset(2, brown_dataset)
 
     while True:
         sentence = input('\n> ')
-        print(sentence_prob(sentence, ngram_model(3, kneser_ney), corpus))
+        print(sentence_prob(sentence, ngram_model(2, kneser_ney), corpus))
 
 if __name__ == '__main__':
     main()

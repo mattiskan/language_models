@@ -21,7 +21,7 @@ def test_tokenize():
 
 
 def test_create_ngram_model():
-    mock_smoothing = mock.Mock(return_value=Decimal(0.3))
+    mock_smoothing = mock.Mock(return_value=0.3)
     MockCorpus = mock.Mock()
     prob_fn = ngram_model(2, mock_smoothing)
 

@@ -39,11 +39,14 @@ class Corpus(object):
 
                 if n == 2:
                     self._specific_suffix[ngram[1]] += 1
+
                 self._counts[ngram] += 1
 
     def post_process(self):
         for value in self._counts.values():
             self._reverse[value] += 1
+
+        print(len(self._counts.keys()))
     
     def count(self, ngram):
         if len(ngram) > self.n: raise ValueError
@@ -75,7 +78,7 @@ class Corpus(object):
         return self._nr_count_distr
 
     def postfixes_occuring_exactly(self, ngram, searched_count):
-        return sum(1 for count in self._prefix_words[ngram[:-1]].values() if count == searched_count)
+        return sum(1 for count in self._prefix_words[ngram].values() if count == searched_count)
     
     def postfixes_occuring_at_least(self, ngram, searched_count):
-        return sum(1 for count in self._prefix_words[ngram[:-1]].values() if count >= searched_count)
+        return sum(1 for count in self._prefix_words[ngram].values() if count >= searched_count)

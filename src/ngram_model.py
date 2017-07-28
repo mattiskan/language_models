@@ -1,5 +1,4 @@
 import os
-from decimal import Decimal
 
 from nltk.util import ngrams as to_ngrams
 
@@ -21,9 +20,6 @@ def ngram_model(n, smoothing):
         for ngram in to_ngrams(sentence, n):
             prob = smoothing(ngram, corpus)
             product *= prob
-            if DEBUG:
-                print('next', ngram)
-                print('prod', product)
 
         return product
     return probability_function

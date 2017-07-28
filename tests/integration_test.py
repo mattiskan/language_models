@@ -42,7 +42,7 @@ def test_blah(example_corpus):
     model = ngram_model(2, no_smoothing)
 
     estimate = model([START_TOKEN, 'John'], example_corpus)
-    assert estimate == Decimal(1) / Decimal(3)
+    assert approx(estimate, 1/3.0)
 
     
 def test_integration_additive_smoothing(example_corpus):
