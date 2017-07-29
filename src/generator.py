@@ -13,14 +13,16 @@ from src.math_utils import weighted_choice
 
 DEBUG = os.environ.get('DEBUG', False)
 
-OVERLAP = 3
-LENGTH_BOOST = 2
+OVERLAP = 2
 
-MIN_PROB = 10 ** -15
+TARGET_LENGTH = 12
+LENGTH_BOOST = 1.0
+
+MIN_PROB = 10 ** -13
 
 def generate_brown():
     print('loading corpus')
-    corpus = src.datasets.donald_speech(n=4)
+    corpus = src.datasets.donald_speech(n=3)
 
     bridge = defaultdict(list)
     start_ngrams = []
@@ -39,12 +41,12 @@ def generate_brown():
     while True:
         try:
             new_sentence = _generate_sentence(start_ngrams, bridge)
-            new_sentence_prob = sentence_prob(new_sentence, ngram_model(3, kneser_ney), corpus) * len(new_sentence)**LENGTH_BOOST
+            new_sentence_prob = _weighted_prob(new_sentence, corpus)
             if DEBUG: print('sentence_prob', new_sentence_prob)
             
             while MIN_PROB > new_sentence_prob:
                 new_sentence = _generate_sentence(start_ngrams, bridge) 
-                new_sentence_prob = sentence_prob(new_sentence, ngram_model(3, kneser_ney), corpus) * len(new_sentence)**LENGTH_BOOST
+                new_sentence_prob = _weighted_prob(new_sentence, corpus)
                 if DEBUG: print('retry: sentence_prob', new_sentence_prob)                
 
         
@@ -74,6 +76,16 @@ def _generate_sentence(start_ngrams, bridge):
 
     return sentence[1:-1]
 
+def _weighted_prob(new_sentence, corpus):
+    original_prob = sentence_prob(new_sentence, ngram_model(3, kneser_ney), corpus)
+    target_diff = (len(new_sentence) - TARGET_LENGTH)
+    adjusted_diff = target_diff
+    
+    result = original_prob * (2**adjusted_diff)
+    if DEBUG: print(locals())
+    return result
+
+    
 def _sanitize(sentence):
     sentence_str = ' '.join(sentence)
 
@@ -81,6 +93,7 @@ def _sanitize(sentence):
         sentence_str = sentence_str.replace(f" n{appo}t", f"n{appo}t")
         sentence_str = sentence_str.replace(f" {appo}ve", f"{appo}ve")
         sentence_str = sentence_str.replace(f" {appo}s", f"{appo}s")
+        sentence_str = sentence_str.replace(f" {appo}d", f"{appo}d")
         sentence_str = sentence_str.replace(f" {appo}re", f"{appo}re")
         sentence_str = sentence_str.replace(f" {appo}m", f"{appo}m")
         sentence_str = sentence_str.replace(f" {appo}ll", f"{appo}ll")

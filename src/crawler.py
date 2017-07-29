@@ -124,8 +124,11 @@ def parse_transcript_basic(rfile):
                 if all(req in keywords for req in ['donald-trump']):
                     return sent_tokenize(payload['articleBody'])
 
-                if DEBUG: import ipdb; ipdb.set_trace()
-                pass
+                if DEBUG:
+                    import ipdb; ipdb.set_trace()
+                    pass
+                else:
+                    print('nothing in', rfile.name)
 
         except json.decoder.JSONDecodeError:
             pass
@@ -135,7 +138,8 @@ class Parser(object):
 
     last_was_trump = False
     new_speaker = re.compile("^.*[A-Z \(\)]+\s?:.*")
-    random_crap_pattern = "\([A-Z ]+\)"
+    random_crap_pattern = "\([A-Za-z ]+\)"
+    random_crap_pattern2 = "\[[A-Za-z ]+\]"
     trump_speaks = re.compile("^\s*T[RUMPrump]+:.*")
     
     @classmethod
