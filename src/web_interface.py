@@ -1,6 +1,5 @@
 import random
 from functools import lru_cache
-from cachetools import LFUCache
 
 from wsgiref.simple_server import make_server
 from pyramid.config import Configurator
