@@ -29,7 +29,7 @@ def donald_tweets(n=3):
 def donald_speech(n=3):
 
     def raw_data():
-        for fname in listdir('data/crawler_raw_responses/time.com/'):
+        for fname in listdir('data/crawler_responses/time.com/'):
             with open('data/crawler_responses/time.com/' + fname, 'r') as rfile:
                 yield from json.load(rfile)
 
