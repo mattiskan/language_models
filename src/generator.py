@@ -20,9 +20,9 @@ LENGTH_BOOST = 1.0
 
 MIN_PROB = 10 ** -13
 
-def generate_brown():
+
+def generate_from(corpus):
     print('loading corpus')
-    corpus = src.datasets.donald_speech(n=3)
 
     bridge = defaultdict(list)
     start_ngrams = []
@@ -50,8 +50,7 @@ def generate_brown():
                 if DEBUG: print('retry: sentence_prob', new_sentence_prob)                
 
         
-            print(_sanitize(new_sentence))
-            input()
+            yield _sanitize(new_sentence)
         except AssertionError:
             continue
 
@@ -107,6 +106,7 @@ def _sanitize(sentence):
     return sentence_str
     
 
-
 if __name__ == '__main__':
-    generate_brown()
+    for sentence in generate_from(src.datasets.donald_speech(n=4)):
+        print(sentence)
+        input()

@@ -30,10 +30,10 @@ def donald_speech(n=3):
     def tokenize_and_filter(sent):
         return [word for word in word_tokenize(html.unescape(sent)) if word not in {';', ':', '``', '&', '#', "''"}]
 
-    return Corpus.from_dataset(n, (tokenize_and_filter(sent) for sent in results()))
+    donald_speech = (tokenize_and_filter(sent) for sent in results())
 
-def _yelp_reviews():
-    pass
+    
+    return Corpus.from_dataset(n, donald_speech)
 
 
 def parse_file(filename):
