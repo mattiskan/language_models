@@ -1,3 +1,4 @@
+import random
 from collections import defaultdict
 from functools import lru_cache
 
@@ -12,19 +13,17 @@ from src.generator import generate_from
 
 PORT = 8080
 
+_quotes = defaultdict(lambda: next(quote_generator()))
 
 @lru_cache(maxsize=1)
 def quote_generator():
     return generate_from(src.datasets.donald_speech(n=4))
 
-
-_quotes = defaultdict(lambda: next(quote_generator()))
-
 def get_quote(quote_id):
     return _quotes[quote_id]
 
-def next_quote_id():
-    return len(_quotes)
+def random_quote_id():
+    return random.choice(_quotes.keys() or '0')
 
 
 @view_config(route_name='quote', renderer='../templates/quote.jinja2')
@@ -34,22 +33,27 @@ def quote(request):
     if not quote_id.isdigit():
         return exc.HTTPNotFound()
 
-    return {'quote': get_quote(quote_id) }
+    return {
+        'quote': get_quote(quote_id),
+        'next_quote_url': request.route_url('quote', quote_id=int(quote_id) + 1),
+    }
 
 @view_config(route_name='root')
-@view_config(route_name='next_quote')
-def next_quote(request):
-    return exc.HTTPFound(request.route_url('quote', quote_id=next_quote_id()))
+@view_config(route_name='random_quote')
+def random_quote(request):
+    return exc.HTTPFound(request.route_url('quote', quote_id=random_quote_id()))
 
 def notfound(request):
     return exc.HTTPNotFound()
 
 if __name__ == '__main__':
+    random.seed(0)
+
     with Configurator() as config:
         config.include('pyramid_jinja2')
         config.add_route('root', '/')
         config.add_route('quote', '/quote/{quote_id}/')
-        config.add_route('next_quote', '/quote/')
+        config.add_route('random_quote', '/quote/')
         config.add_notfound_view(notfound, append_slash=True)
         config.scan()
         app = config.make_wsgi_app()
