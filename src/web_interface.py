@@ -1,6 +1,6 @@
 import random
-from collections import defaultdict
 from functools import lru_cache
+from cachetools import LFUCache
 
 from wsgiref.simple_server import make_server
 from pyramid.config import Configurator
@@ -13,17 +13,15 @@ from src.generator import generate_from
 
 PORT = 8080
 
-_quotes = defaultdict(lambda: next(quote_generator()))
-
 @lru_cache(maxsize=1)
 def quote_generator():
     return generate_from(src.datasets.donald_speech(n=4))
 
+@lru_cache(maxsize=10**7)
 def get_quote(quote_id):
-    return _quotes[quote_id]
+    random.seed(int(quote_id)) # determinism yao
 
-def random_quote_id():
-    return random.choice(list(_quotes.keys()))
+    return next(quote_generator())
 
 
 @view_config(route_name='quote', renderer='../templates/quote.jinja2')
@@ -35,19 +33,20 @@ def quote(request):
 
     return {
         'quote': get_quote(quote_id),
+        'previous_quote_url': request.route_url('quote', quote_id=max(int(quote_id) - 1, 0)),
         'next_quote_url': request.route_url('quote', quote_id=int(quote_id) + 1),
     }
 
 @view_config(route_name='root')
 @view_config(route_name='random_quote')
 def random_quote(request):
-    return exc.HTTPFound(request.route_url('quote', quote_id=random_quote_id()))
+    return exc.HTTPFound(request.route_url('quote', quote_id=0))
 
 def notfound(request):
     return exc.HTTPNotFound()
 
+
 if __name__ == '__main__':
-    random.seed(0)
 
     with Configurator() as config:
         config.include('pyramid_jinja2')
