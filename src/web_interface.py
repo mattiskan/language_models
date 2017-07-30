@@ -23,7 +23,7 @@ def get_quote(quote_id):
     return _quotes[quote_id]
 
 def random_quote_id():
-    return random.choice(_quotes.keys() or '0')
+    return random.choice(list(_quotes.keys()))
 
 
 @view_config(route_name='quote', renderer='../templates/quote.jinja2')
