@@ -17,7 +17,7 @@ PORT = 8080
 def quote_generator():
     return generate_from(src.datasets.donald_speech(n=4))
 
-@lru_cache(maxsize=10**7)
+@lru_cache(maxsize=10**5)
 def get_quote(quote_id):
     random.seed(int(quote_id)) # determinism yao
 
