@@ -6,4 +6,5 @@ requests
 pyquery
 ipdb
 pyramid
+pyramid_jinja2
 #html # fails install but works for whatever reason
