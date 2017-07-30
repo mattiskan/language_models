@@ -6,7 +6,7 @@ from decimal import Decimal
 from collections import defaultdict
 from functools import lru_cache
 
-DEBUG = os.environ.get('DEBUG', False)
+DEBUG = os.environ.get('DEBUG', False) and __name__ == '__main__'
 
 def no_smoothing(ngram, corpus):
     return additive_smoothing(ngram, corpus, delta=0)
@@ -77,4 +77,4 @@ def kneser_ney(ngram, corpus):
         print(ngram, term1 + term2)
 
     #import ipdb; ipdb.set_trace()
-    return term1 + term2
+    return (term1 + term2) or 10**-30

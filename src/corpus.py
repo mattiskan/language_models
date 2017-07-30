@@ -65,7 +65,6 @@ class Corpus(object):
         return self._counts[ngram[:-1]]
 
     def specific_prefix_count(self, word):
-        assert isinstance(word, str)
         return self._specific_suffix[word]
 
     def nr_count_distr(self):
