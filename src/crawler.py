@@ -32,7 +32,7 @@ def crawl_times():
     gevent_pool = Pool(10)
 
     try:
-        with open('crawler_raw_responses/time.com/google_next_index.int', 'r') as rfile:
+        with open('data/crawler_raw_responses/time.com/google_next_index.int', 'r') as rfile:
             start_index = rfile.read()
             assert int(start_index)
     except:
@@ -56,7 +56,7 @@ def crawl_times():
 
             assert int(start_index)
 
-            with open('crawler_raw_responses/time.com/google_next_index.int', 'w') as wfile:
+            with open('data/crawler_raw_responses/time.com/google_next_index.int', 'w') as wfile:
                 wfile.write(str(start_index))
             
             
@@ -66,13 +66,13 @@ def crawl_times():
                 link_id = url.split('/')[-3]
                 assert int(link_id)
             
-                if os.path.isfile(f'crawler_raw_responses/time.com/{link_id}'):
+                if os.path.isfile(f'data/crawler_raw_responses/time.com/{link_id}'):
                     print(f'already fetched: {url}')
                     continue
             
                 pool.spawn(fetch_transcript, url, session)
 
-            with open('crawler_raw_responses/time.com/last_search_response.json', 'w') as wfile:
+            with open('data/crawler_raw_responses/time.com/last_search_response.json', 'w') as wfile:
                 wfile.write(google_response.text)
 
                 
@@ -94,7 +94,7 @@ def fetch_transcript(url, session):
 
     link_id = url.split('/')[-3]
     assert int(link_id)
-    with open(f'crawler_raw_responses/time.com/{link_id}', 'w') as wfile:
+    with open(f'data/crawler_raw_responses/time.com/{link_id}', 'w') as wfile:
         wfile.write(response.text)
 
 
@@ -175,17 +175,17 @@ if __name__ == '__main__':
     #crawl_times()
 
     total = 0
-    for fname in ([] or listdir('crawler_raw_responses/time.com/')):
+    for fname in ([] or listdir('data/crawler_raw_responses/time.com/')):
         try:
             if int(fname):
-                with open('crawler_raw_responses/time.com/' + fname, 'r') as rfile:
+                with open('data/crawler_raw_responses/time.com/' + fname, 'r') as rfile:
                     results = parse_transcript_basic(rfile)
 
                 partial = sum(len(sent.split()) for sent in results)
                 print(rfile.name)
                 total += partial
 
-                with open('crawler_responses/time.com/' + fname, 'w') as wfile:
+                with open('data/crawler_responses/time.com/' + fname, 'w') as wfile:
                     wfile.write(json.dumps(results))
         except TypeError:
             pass

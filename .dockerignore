@@ -1,4 +1,4 @@
-crawler_responses_raw
+data/
 venv/
 __pycache__
 *.pyc

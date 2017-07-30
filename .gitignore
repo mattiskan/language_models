@@ -9,3 +9,4 @@ venv/*
 .nltk_data
 
 keys.json
+data/

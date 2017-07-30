@@ -20,7 +20,7 @@ def brown_dataset(n=3):
 def donald_tweets(n=3):
 
     def gen():
-        for line in parse_file('the_donald_tweets.json'):
+        for line in parse_file('data/the_donald_tweets.json'):
             yield [ (word, '') for word in word_tokenize(line['text']) ]
 
     return Corpus.from_dataset(n, gen())
@@ -29,8 +29,8 @@ def donald_tweets(n=3):
 def donald_speech(n=3):
 
     def raw_data():
-        for fname in listdir('crawler_raw_responses/time.com/'):
-            with open('crawler_responses/time.com/' + fname, 'r') as rfile:
+        for fname in listdir('data/crawler_raw_responses/time.com/'):
+            with open('data/crawler_responses/time.com/' + fname, 'r') as rfile:
                 yield from json.load(rfile)
 
     def tokenize_and_filter(sent):
