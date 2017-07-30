@@ -1,0 +1,4 @@
+crawler_responses_raw
+venv/
+__pycache__
+*.pyc

@@ -5,4 +5,5 @@ gevent
 requests
 pyquery
 ipdb
+pyramid
 #html # fails install but works for whatever reason
