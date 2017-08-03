@@ -39,7 +39,8 @@ def crawl_times():
         start_index = 0
                 
 
-    q = 'donald+trump+transcripts+full+text+site%3Atime.com'
+    #q = 'donald+trump+transcripts+full+text+site%3Atime.com'
+    q = 'campaign+speeches+by+donald+trump+site%3Atime.com'
     
     google_search_url = f'https://www.googleapis.com/customsearch/v1?key={GOOGLE_API_KEY}&cx={CX}&q={q}'
 
@@ -70,7 +71,7 @@ def crawl_times():
                     print(f'already fetched: {url}')
                     continue
             
-                pool.spawn(fetch_transcript, url, session)
+                gevent_pool.spawn(fetch_transcript, url, session)
 
             with open('data/crawler_raw_responses/time.com/last_search_response.json', 'w') as wfile:
                 wfile.write(google_response.text)
@@ -138,8 +139,8 @@ class Parser(object):
 
     last_was_trump = False
     new_speaker = re.compile("^.*[A-Z \(\)]+\s?:.*")
-    random_crap_pattern = "\([A-Za-z ]+\)"
-    random_crap_pattern2 = "\[[A-Za-z ]+\]"
+    random_crap_pattern = "\([A-Za-z, ]+\)"
+    random_crap_pattern2 = "\[[A-Za-z, ]+\]"
     trump_speaks = re.compile("^\s*T[RUMPrump]+:.*")
     
     @classmethod
@@ -177,7 +178,7 @@ if __name__ == '__main__':
     total = 0
     for fname in ([] or listdir('data/crawler_raw_responses/time.com/')):
         try:
-            if int(fname):
+            if fname.isdigit():
                 with open('data/crawler_raw_responses/time.com/' + fname, 'r') as rfile:
                     results = parse_transcript_basic(rfile)
 
