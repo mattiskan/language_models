@@ -32,7 +32,6 @@ def quote(request):
 
     return {
         'quote': get_quote(quote_id),
-        'previous_quote_url': request.route_url('quote', quote_id=max(int(quote_id) - 1, 0)),
         'next_quote_url': request.route_url('quote', quote_id=int(quote_id) + 1),
     }
 

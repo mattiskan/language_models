@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>TRUMPQUOTES</title>
+  <title>TRUMPQUOTES</title>
+  <style>
+    h1 {
+    text-align: center;
+    padding: 0 5%;
+    margin-top: 10%;
+    margin-bottom: 8%;
+    }
+    input {
+    margin: auto;
+    display: block;
+    width:80%;
+    max-width:400px;
+    height: 50px;
+    }
+</style>
 </head>
 <body>
 
-<p>Donald Trump, as interpreted by a statistical language model.</p>
+<div>
+  <h1 >{{ quote }}</h1>
+</div>
 
-<h1>{{ quote }}</h1>
-
-<form action="{{previous_quote_url}}">
-    <input type="submit" value="Last quote, please!" />
-</form>
 <form action="{{next_quote_url}}">
     <input type="submit" value="Next quote, please!" />
 </form>
 
-<br style="margin-top:30px"/>
 
-<p>Source code: <a href="https://github.com/mattiskan/language_models">here</a>.</p>
+<p> -- <a href="https://en.wikipedia.org/wiki/Kneser%E2%80%93Ney_smoothing">A statistical language model</a> trained on Donald Trump's speeches.</p>
+<p>Source code here: <a href="https://github.com/mattiskan/language_models">here</a>.</p>
 
 </body>
 </html>
