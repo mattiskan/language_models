@@ -62,7 +62,7 @@ def _generate_sentence(start_ngrams, bridge):
     current_ngram = weighted_choice(start_ngrams)
 
     #import ipdb; ipdb.set_trace()
-    sentence = [current_ngram[0]]  # let's get this party started
+    sentence = [current_ngram[:2]]  # let's get this party started
 
     only_choice = 0
     
@@ -130,7 +130,7 @@ def _sanitize(sentence):
     sentence_str = sentence_str.replace(" ,", ",")
     sentence_str = sentence_str.replace(" .", ".")
     sentence_str = sentence_str.replace(" ?", "?")
-    return sentence_str
+    return sentence_str.capitalize()
     
 
 if __name__ == '__main__':

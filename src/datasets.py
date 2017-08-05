@@ -55,7 +55,13 @@ def donald_speech(n=3):
                 yield from json.load(rfile)
 
     def tokenize_and_filter(sent):
-        return [word for word in word_tokenize(html.unescape(sent)) if word not in {';', ':', '``', '&', '#', "''"}]
+        sent = html.unescape(sent)
+        sent = word_tokenize(sent)
+        if sent:
+            sent[0] = sent[0].lower()
+
+        sent = [word for word in sent if word not in {';', ':', '``', '&', '#', "''"}]
+        return sent
 
     return Corpus.from_dataset(n, (nltk.pos_tag(tokenize_and_filter(sent)) for sent in raw_data()))
 
