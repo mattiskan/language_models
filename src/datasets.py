@@ -1,12 +1,33 @@
 import json
 import html
-from os import listdir
+import os
+import pickle
 from src.corpus import Corpus
 import nltk
 from nltk.corpus import brown
 from nltk.tokenize import word_tokenize
 
 
+def cached(dataset_function):
+
+    def decorator(n=3):
+        cache_path = f'corpus_cache/{dataset_function.__name__}_{n}.txt'
+        try:
+            with open(cache_path, 'rb') as rfile:
+                return pickle.load(rfile)
+        except IOError:
+            print('Missed cache: Generating corpus...')
+
+        corpus = dataset_function(n)
+        with open(cache_path, 'wb') as wfile:
+            pickle.dump(corpus, wfile)
+
+        return corpus
+
+    return decorator
+    
+
+@cached
 def brown_dataset(n=3):
     stop_words = {"''", '``', ';', ':', "'"}
 
@@ -16,7 +37,7 @@ def brown_dataset(n=3):
 
     return Corpus.from_dataset(n, sentences())
 
-
+@cached
 def donald_tweets(n=3):
 
     def gen():
@@ -25,11 +46,11 @@ def donald_tweets(n=3):
 
     return Corpus.from_dataset(n, gen())
 
-    
+@cached
 def donald_speech(n=3):
 
     def raw_data():
-        for fname in listdir('data/crawler_responses/time.com/'):
+        for fname in os.listdir('data/crawler_responses/time.com/'):
             with open('data/crawler_responses/time.com/' + fname, 'r') as rfile:
                 yield from json.load(rfile)
 

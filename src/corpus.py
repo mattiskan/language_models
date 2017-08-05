@@ -1,7 +1,13 @@
+from copy import copy
 from collections import defaultdict
 from nltk.util import ngrams as to_ngrams
 
 from src.ngram_model import tokenize
+
+
+def _int_dd():
+    """ This is only here because I can't pickle lambdas. """
+    return defaultdict(int)
 
 
 class Corpus(object):
@@ -11,7 +17,7 @@ class Corpus(object):
         self._counts = defaultdict(int)
         self._totals = defaultdict(int)
         self._reverse = defaultdict(int)
-        self._prefix_words = defaultdict(lambda: defaultdict(int))
+        self._prefix_words = defaultdict(_int_dd)
         self._specific_suffix = defaultdict(int)
 
     @classmethod
@@ -44,6 +50,7 @@ class Corpus(object):
     def post_process(self):
         for value in self._counts.values():
             self._reverse[value] += 1
+
     
     def count(self, ngram):
         if len(ngram) > self.n: raise ValueError

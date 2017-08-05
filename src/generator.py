@@ -14,12 +14,12 @@ from src.math_utils import weighted_choice
 
 DEBUG = os.environ.get('DEBUG', False)
 
-OVERLAP = 3
+OVERLAP = 2
 
-TARGET_LENGTH = 12
+TARGET_LENGTH = 10
 LENGTH_BOOST = 10
 
-MIN_PROB = 10**-30
+MIN_PROB = 10**-40
 
 class StartOver(Exception):
     pass
@@ -52,7 +52,7 @@ def generate_from(corpus):
             while MIN_PROB > new_sentence_prob:
                 new_sentence = _generate_sentence(start_ngrams, bridge) 
                 new_sentence_prob = _weighted_prob(new_sentence, corpus)
-                if DEBUG: print('retry: sentence_prob', new_sentence_prob, _sanitize(new_sentence))
+                if DEBUG: print('retry: sentence_prob', new_sentence_prob)
         
             yield _sanitize(new_sentence)
         except StartOver:
@@ -79,9 +79,12 @@ def _generate_sentence(start_ngrams, bridge):
         current_ngram = weighted_choice(choices)
         sentence.append(current_ngram[0])
 
+    if len(sentence) < TARGET_LENGTH:
+        raise StartOver
     
-    print('only_choice', float(only_choice) / len(sentence))
-    if float(only_choice) / len(sentence) > 0.8:
+    #print('only_choice', float(only_choice) / len(sentence))
+    if float(only_choice) / len(sentence) > 0.6:
+        print('only choice!')
         raise StartOver
     
             
@@ -95,17 +98,17 @@ def _weighted_prob(new_sentence, corpus):
     original_prob = ngram_model(4, kneser_ney)(new_sentence, corpus)
     return original_prob
 
-    length_diff = len(new_sentence) - 3
+    length_diff = min(len(new_sentence) - TARGET_LENGTH, 10) * abs(min(len(new_sentence) - TARGET_LENGTH, 10))
 
-    #print(new_sentence)
-    #print('len', len(new_sentence))
-    #print('prob', original_prob)
-    #print('diff', length_diff)
+    print('len', len(new_sentence))
+    print('orig prob', original_prob)
+    print('diff', length_diff)
+    print(_sanitize(new_sentence))
     #
     #wb = original_prob * (10**length_diff)
     #print('weighted', wb)
     #input()
-    return original_prob * (3**length_diff)
+    return original_prob * (10**length_diff)
 
     
 def _sanitize(sentence):
@@ -153,3 +156,5 @@ if __name__ == '__main__':
     for sentence in generate_from(corpus):
         print(sentence)
         input()
+        print('.')
+

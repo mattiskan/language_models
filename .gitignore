@@ -6,6 +6,8 @@ venv/*
 # pytest
 .cache/
 
+
+corpus_cache/
 .nltk_data
 keys.json
 data/

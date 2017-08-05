@@ -1,4 +1,5 @@
 import os
+import math
 
 from nltk.util import ngrams as to_ngrams
 
@@ -15,13 +16,15 @@ def sentence_prob(sentence, model, corpus):
 
 def ngram_model(n, smoothing):
     def probability_function(sentence, corpus):
-        product = 1.0
+        prob = 1.0
 
         for ngram in to_ngrams(sentence, n):
-            prob = smoothing(ngram, corpus)
-            product *= prob
+            prob *= smoothing(ngram, corpus)
 
-        return product
+            if not prob:
+                break
+
+        return prob
     return probability_function
 
   
