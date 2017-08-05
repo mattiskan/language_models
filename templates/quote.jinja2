@@ -7,27 +7,39 @@
     text-align: center;
     padding: 0 5%;
     margin-top: 10%;
-    margin-bottom: 8%;
+    margin-bottom: 6%;
+    }
+    .middle {
+    text-align: center;
+    margin: auto;
+    display: block;
     }
     input {
-    margin: auto;
-    margin-bottom: 20%;
-    display: block;
     width:80%;
     max-width:400px;
     height: 50px;
+    }
+    .check-link {
+    margin-bottom: 50px;
+    }
+    form {
+    margin-bottom: 20%;
     }
 </style>
 </head>
 <body>
 
 <div>
-  <h1 >{{ quote }}</h1>
+  <h1>{{ quote }}</h1>
 </div>
 
-<form action="{{next_quote_url}}">
-    <input type="submit" value="Next quote, please!" />
+<div class="middle check-link">
+  <a href="{{check_url}}">Check if this quote exists</a>
+</div>
+<form class="middle" action="{{next_quote_url}}">
+  <input type="submit" value="Next quote, please!" />
 </form>
+
 
 
 <p> Hi! I'm <a href="https://en.wikipedia.org/wiki/Kneser%E2%80%93Ney_smoothing">a statistical language model</a> trained on Donald Trump's speeches.</p>

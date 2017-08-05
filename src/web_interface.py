@@ -1,4 +1,5 @@
 import random
+import urllib.parse
 from functools import lru_cache
 
 from wsgiref.simple_server import make_server
@@ -30,9 +31,11 @@ def quote(request):
     if not quote_id.isdigit():
         return exc.HTTPNotFound()
 
+    quote = get_quote(quote_id)
     return {
-        'quote': get_quote(quote_id),
+        'quote': quote,
         'next_quote_url': request.route_url('quote', quote_id=int(quote_id) + 1),
+        'check_url': 'https://www.google.com/search?q={}'.format(urllib.parse.quote_plus('"'+quote+'"'))
     }
 
 @view_config(route_name='root')
