@@ -11,7 +11,7 @@ from nltk.tokenize import word_tokenize
 def cached(dataset_function):
 
     def decorator(n=3):
-        cache_path = f'corpus_cache/{dataset_function.__name__}_{n}.txt'
+        cache_path = f'corpus_cache/{dataset_function.__name__}_{n}.pickle'
         try:
             with open(cache_path, 'rb') as rfile:
                 return pickle.load(rfile)
